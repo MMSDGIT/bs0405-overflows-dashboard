@@ -8,16 +8,21 @@ app_server <- function(input, output, session) {
 
   all_dat <- readRDS("all_dat.RDS")
 
-  # history
+  # ---- HISTORY ----
   mod_history_server(
     "history_1",
     all_dat
   )
 
-  # events
+  # ---- EVENTS ----
   filt_dat_events <- mod_events_select_inputs_server(
     "events_select_inputs_1",
     all_dat
+  )
+
+  mod_events_summary_tbl_server(
+    "events_summary_tbl_1",
+    filt_dat_events
   )
 
   mod_events_pump_plot_server(
@@ -32,11 +37,6 @@ app_server <- function(input, output, session) {
 
   mod_events_gate_plot_server(
     "events_gate_plot_1",
-    filt_dat_events
-  )
-
-  mod_events_summary_tbl_server(
-    "events_summary_tbl_1",
     filt_dat_events
   )
 }
