@@ -96,12 +96,12 @@ mod_history_ui <- function(id) {
 #' history Server Functions
 #'
 #' @noRd
-mod_history_server <- function(id) {
+mod_history_server <- function(id, dat) {
 
   moduleServer(id, function(input, output, session) {
 
-    history_dat <- all_dat[["history"]]
-    events_dat  <- all_dat[["events"]]
+    history_dat <- dat[["history"]]
+    events_dat  <- dat[["events"]]
 
     # ---- HISTORY PLOTS ----
 

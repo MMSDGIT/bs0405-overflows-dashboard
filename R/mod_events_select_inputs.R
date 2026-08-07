@@ -5,11 +5,6 @@ mod_events_select_inputs_ui <- function(id) {
 
   ns <- NS(id)
 
-  choices <- stats::setNames(
-    all_dat[["events"]]$event_id,
-    all_dat[["events"]]$start_date
-  )
-
   tagList(
     bs4Dash::bs4Card(
       title = "Select Input",
@@ -24,11 +19,8 @@ mod_events_select_inputs_ui <- function(id) {
 
         shiny::column(
           width = 8,
-
-          shiny::selectInput(
-            ns("event_id"),
-            "Select Event",
-            choices = choices
+          shiny::uiOutput(
+            ns("events")
           )
         ),
 
@@ -49,24 +41,45 @@ mod_events_select_inputs_ui <- function(id) {
     )
   )
 }
-
 #' selection_pane_table Server Functions
 #'
 #' @noRd
-mod_events_select_inputs_server <- function(id) {
+mod_events_select_inputs_server <- function(id, dat) {
 
   moduleServer(id, function(input, output, session) {
 
-    events_dat <- all_dat[["events"]]
-    hist_dat   <- all_dat[["hist_dat"]]
+    ns <- session$ns
 
+    events_dat <- dat[["events"]]
+    hist_dat   <- dat[["hist_dat"]]
+
+    # ---- EVENT SELECT ----
+    output$events <- shiny::renderUI({
+
+      shiny::req(events_dat)
+
+      choices <- stats::setNames(
+        events_dat$event_id,
+        events_dat$start_date
+      )
+
+      shiny::selectInput(
+        ns("event_id"),
+        "Select Event",
+        choices = choices
+      )
+    })
+
+    # ---- SELECTED EVENT DATA ----
     selected_data <- shiny::eventReactive(
       input$get_data,
       {
 
         shiny::req(input$event_id)
 
-        event_id_selected <- as.numeric(input$event_id)
+        event_id_selected <- as.numeric(
+          input$event_id
+        )
 
         events_filt <- events_dat |>
           dplyr::filter(
