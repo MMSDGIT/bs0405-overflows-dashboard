@@ -56,8 +56,6 @@ mod_events_select_inputs_server <- function(id, dat) {
     # ---- EVENT SELECT ----
     output$events <- shiny::renderUI({
 
-      shiny::req(events_dat)
-
       choices <- stats::setNames(
         events_dat$event_id,
         events_dat$start_date
@@ -70,16 +68,19 @@ mod_events_select_inputs_server <- function(id, dat) {
       )
     })
 
-    # ---- SELECTED EVENT DATA ----
-    selected_data <- shiny::eventReactive(
+    # ---- SELECTED DATA STORAGE ----
+    selected_data <- shiny::reactiveVal(NULL)
+
+    # ---- BUTTON CLICK ----
+    shiny::observeEvent(
       input$get_data,
       {
 
         shiny::req(input$event_id)
 
-        event_id_selected <- as.numeric(
-          input$event_id
-        )
+        event_id_selected <- as.numeric(input$event_id)
+
+        message("Loading event: ", event_id_selected)
 
         events_filt <- events_dat |>
           dplyr::filter(
@@ -91,11 +92,19 @@ mod_events_select_inputs_server <- function(id, dat) {
             event_id == event_id_selected
           )
 
-        list(
-          events = events_filt,
-          hist_dat = hist_dat_filt
+        message(
+          "Events rows: ", nrow(events_filt),
+          " | Historian rows: ", nrow(hist_dat_filt)
         )
-      }
+
+        selected_data(
+          list(
+            events = events_filt,
+            hist_dat = hist_dat_filt
+          )
+        )
+      },
+      ignoreInit = TRUE
     )
 
     selected_data

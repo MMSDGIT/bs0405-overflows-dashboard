@@ -6,16 +6,15 @@
 #' @noRd
 app_server <- function(input, output, session) {
 
-  # ---- LOAD DEPLOYED DATA ----
   all_dat <- readRDS("all_dat.RDS")
 
-  # ---- HISTORY ----
+  # history
   mod_history_server(
     "history_1",
     all_dat
   )
 
-  # ---- EVENTS ----
+  # events
   filt_dat_events <- mod_events_select_inputs_server(
     "events_select_inputs_1",
     all_dat
