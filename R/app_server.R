@@ -6,7 +6,7 @@
 #' @noRd
 app_server <- function(input, output, session) {
 
-  all_dat <- readRDS("all_dat.RDS")
+  all_dat <- readRDS("data-raw/all_dat.RDS")
 
   # ---- HISTORY ----
   mod_history_server(

@@ -29,12 +29,13 @@ mod_events_select_inputs_ui <- function(id) {
         shiny::column(
           width = 8,
 
-          shiny::selectInput(
-            ns("event_id"),
-            "Select Event",
-            choices = NULL,
-            width = "100%"
-          )
+shiny::selectInput(
+  ns("event_id"),
+  "Select Event",
+  choices = NULL,
+  width = "100%",
+  selectize = FALSE
+)
         ),
 
         shiny::column(
