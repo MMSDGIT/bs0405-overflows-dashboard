@@ -77,7 +77,7 @@ mod_events_gate_plot_server <- function(id, dat) {
      #     )
      #   ) +
         ggplot2::labs(
-          title = "Gate Positions",
+          title = "Gate Positions (Percent Open)",
           x = NULL,
           y = "Position (%)",
           color = "Gate"

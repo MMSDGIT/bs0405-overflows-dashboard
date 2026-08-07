@@ -15,7 +15,7 @@ mod_history_ui <- function(id) {
 
   shiny::tags$p(
     "This application provides interactive visualizations and historical summaries
-    of overflow events at BS0405. The applciationn includes event
+    of overflow events at BS0405. The application includes event
     exploration, historical trends, and supporting operational data."
   ),
 
