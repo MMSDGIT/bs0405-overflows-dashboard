@@ -4,6 +4,12 @@
 #' events_select_inputs UI Function
 #'
 #' @noRd
+#' events_select_inputs UI Function
+#'
+#' @noRd
+#' events_select_inputs UI Function
+#'
+#' @noRd
 mod_events_select_inputs_ui <- function(id) {
 
   ns <- NS(id)
@@ -18,14 +24,45 @@ mod_events_select_inputs_ui <- function(id) {
       collapsible = TRUE,
       collapsed = FALSE,
 
-      shiny::uiOutput(
-        ns("events")
+      shiny::fluidRow(
+
+        shiny::column(
+          width = 8,
+
+          shiny::selectInput(
+            ns("event_id"),
+            "Select Event",
+            choices = NULL,
+            width = "100%"
+          )
+        ),
+
+        shiny::column(
+          width = 4,
+
+          shiny::tags$div(
+            style = "padding-top: 25px;",
+
+            shiny::actionButton(
+              ns("get_data"),
+              "Load Event",
+              width = "100%"
+            )
+          )
+        )
       )
     )
   )
 }
 
+
 #' selection_pane_table Server Functions
+#'
+#' @noRd
+#' events_select_inputs Server Function
+#'
+#' @noRd
+#' events_select_inputs Server Function
 #'
 #' @noRd
 #' events_select_inputs Server Function
@@ -35,35 +72,28 @@ mod_events_select_inputs_server <- function(id, dat) {
 
   moduleServer(id, function(input, output, session) {
 
-    ns <- session$ns
-
     events_dat <- dat[["events"]]
     hist_dat   <- dat[["hist_dat"]]
 
-    # ---- EVENT SELECT ----
-    output$events <- shiny::renderUI({
+    # ---- POPULATE EVENT SELECT ----
+    choices <- stats::setNames(
+      events_dat$event_id,
+      events_dat$start_date
+    )
 
-      choices <- stats::setNames(
-        events_dat$event_id,
-        events_dat$start_date
-      )
+    shiny::updateSelectInput(
+      session = session,
+      inputId = "event_id",
+      choices = choices,
+      selected = events_dat$event_id[1]
+    )
 
-      shiny::selectInput(
-        ns("event_id"),
-        "Select Event",
-        choices = choices,
-        width = "100%"
-      )
-    })
-
-
-    # ---- SELECTED EVENT STORAGE ----
+    # ---- STORAGE ----
     selected_data <- shiny::reactiveVal(NULL)
 
-
-    # ---- UPDATE WHEN EVENT CHANGES ----
+    # ---- LOAD EVENT ON BUTTON CLICK ----
     shiny::observeEvent(
-      input$event_id,
+      input$get_data,
       {
 
         shiny::req(input$event_id)
@@ -83,7 +113,7 @@ mod_events_select_inputs_server <- function(id, dat) {
           )
 
         message(
-          "Selected event: ", event_id_selected,
+          "Loaded event: ", event_id_selected,
           " | Event rows: ", nrow(events_filt),
           " | Historian rows: ", nrow(hist_dat_filt)
         )
@@ -95,9 +125,9 @@ mod_events_select_inputs_server <- function(id, dat) {
           )
         )
       },
-      ignoreInit = FALSE
+      ignoreInit = TRUE
     )
 
-    selected_data
+    return(selected_data)
   })
 }
